@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Department Management - Payroll System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(rgba(10, 10, 20, 0.8), rgba(5, 5, 10, 0.9)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    }
+
+    .page-subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.7s; }
+    .card:nth-child(2) { animation-delay: 0.9s; }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .table-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .department-card:nth-child(1) { animation-delay: 1.1s; }
+    .department-card:nth-child(2) { animation-delay: 1.3s; }
+    .department-card:nth-child(3) { animation-delay: 1.5s; }
+    .department-card:nth-child(4) { animation-delay: 1.7s; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+
+    /* Notification Modal Styles */
+    .notification-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 3000;
+      padding-top: 5vh;
+      backdrop-filter: blur(5px);
+    }
+
+    .notification-modal {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem 2rem;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transform: translateY(-50px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .notification-overlay.show .notification-modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .notification-icon {
+      font-size: 2rem;
+    }
+    .notification-icon.success { color: #28a745; }
+    .notification-icon.error { color: #e74c3c; }
+
+    .notification-title {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .notification-text {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+
+    /* Confirmation Modal Styles */
+    .confirm-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .confirm-modal {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transform: scale(0.9);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .confirm-overlay.show .confirm-modal {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .confirm-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #e74c3c;
+      margin-bottom: 0.5rem;
+    }
+
+    .confirm-text {
+      color: #34495e;
+      margin-bottom: 1.5rem;
+    }
+
+    .confirm-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .confirm-btn {
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .confirm-btn.danger { background: #e74c3c; color: white; }
+    .confirm-btn.secondary { background: #f0f2f5; color: #34495e; }
+
+    /* Floating particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🏢 Payroll System</a>
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Department Management</h1>
+    <p class="page-subtitle">Organize and manage departments, hierarchies, and organizational structure</p>
+
+    <div class="content-grid">
+      <div class="card">
+        <h2 class="card-title">
+          <span>➕</span>
+          Add New Department
+        </h2>
+        <form id="addDeptForm">
+          <div class="form-group">
+            <label for="deptName">Department Name:</label>
+            <input type="text" id="deptName" placeholder="Enter department name">
+          </div>
+
+          <div class="form-group">
+            <label for="deptCode">Department Code:</label>
+            <input type="text" id="deptCode" placeholder="Enter department code">
+          </div>
+
+          <div class="form-group">
+            <label for="deptHead">Department Head:</label>
+            <input type="text" id="deptHead" placeholder="Enter department head name">
+          </div>
+
+          <button type="button" class="btn" onclick="addDepartment()">Create Department</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="table-container card">
+      <h2 class="card-title">
+        <span>📋</span>
+        Existing Departments
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Department Name</th>
+            <th>Code</th>
+            <th>Head</th>
+            <th>Employees</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="departmentTableBody">
+          <!-- Department rows will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="notification-overlay" id="notificationOverlay">
+    <div class="notification-modal">
+      <div class="notification-icon" id="notificationIcon"></div>
+      <div class="notification-content">
+        <h3 class="notification-title" id="notificationTitle"></h3>
+        <p class="notification-text" id="notificationText"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-modal">
+      <h3 class="confirm-title">Are you sure?</h3>
+      <p class="confirm-text" id="confirmText"></p>
+      <div class="confirm-buttons">
+        <button class="confirm-btn secondary" id="cancelBtn">Cancel</button>
+        <button class="confirm-btn danger" id="confirmBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    let systemData = {};
+
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = Math.random() * 4 + 2 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+
+    function showNotification(type, title, message) {
+      const overlay = document.getElementById('notificationOverlay');
+      const icon = document.getElementById('notificationIcon');
+      const titleEl = document.getElementById('notificationTitle');
+      const textEl = document.getElementById('notificationText');
+
+      if (type === 'success') {
+        icon.innerHTML = '✅';
+        icon.className = 'notification-icon success';
+      } else {
+        icon.innerHTML = '❌';
+        icon.className = 'notification-icon error';
+      }
+
+      titleEl.textContent = title;
+      textEl.textContent = message;
+
+      overlay.style.display = 'flex';
+      setTimeout(() => overlay.classList.add('show'), 10);
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 400);
+      }, 3000);
+    }
+
+    function loadData() {
+      const savedData = localStorage.getItem('payrollSystemData');
+      systemData = savedData ? JSON.parse(savedData) : { departments: [] };
+      if (!systemData.departments) systemData.departments = [];
+      renderDepartmentTable();
+    }
+
+    function saveDataToStorage() {
+      localStorage.setItem('payrollSystemData', JSON.stringify(systemData));
+    }
+
+    function renderDepartmentTable() {
+      const tableBody = document.getElementById('departmentTableBody');
+      tableBody.innerHTML = '';
+      systemData.departments.forEach((dept, index) => {
+        const row = `<tr>
+                      <td>${dept.name}</td>
+                      <td>${dept.code}</td>
+                      <td>${dept.head}</td>
+                      <td>${dept.employees || 0}</td>
+                      <td><button class="delete-btn" onclick="deleteDepartment(${index})">Delete</button></td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function addDepartment() {
+      const newDept = {
+        id: Date.now(), // Unique ID
+        name: document.getElementById('deptName').value,
+        code: document.getElementById('deptCode').value,
+        head: document.getElementById('deptHead').value,
+        employees: 0
+      };
+      if (!newDept.name || !newDept.code || !newDept.head) {
+        showNotification('error', 'Error', 'Please fill all fields.');
+        return;
+      }
+      systemData.departments.push(newDept);
+      saveDataToStorage();
+      renderDepartmentTable();
+      document.getElementById('addDeptForm').reset();
+    }
+
+    function deleteDepartment(index) {
+      const overlay = document.getElementById('confirmOverlay');
+      const confirmText = document.getElementById('confirmText');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      confirmText.textContent = `This will permanently delete the "${systemData.departments[index].name}" department. This action cannot be undone.`;
+      overlay.style.display = 'flex';
+      setTimeout(() => overlay.classList.add('show'), 10);
+
+      const confirmHandler = () => {
+        systemData.departments.splice(index, 1);
+        saveDataToStorage();
+        renderDepartmentTable();
+        closeConfirm();
+      };
+
+      const closeConfirm = () => {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 300);
+        confirmBtn.removeEventListener('click', confirmHandler);
+        cancelBtn.removeEventListener('click', closeConfirm);
+      };
+
+      confirmBtn.addEventListener('click', confirmHandler);
+      cancelBtn.addEventListener('click', closeConfirm);
+    }
+    window.onload = () => {
+      loadData();
+      createParticles();
+    };
+  </script>
+</body>
+
+</html>

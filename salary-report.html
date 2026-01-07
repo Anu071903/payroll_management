@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salary Report - Payroll System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(rgba(10, 10, 20, 0.8), rgba(5, 5, 10, 0.9)), url('https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    }
+
+    .page-subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .report-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .report-card:nth-child(1) { animation-delay: 0.7s; }
+    .report-card:nth-child(2) { animation-delay: 0.9s; }
+    .report-card:nth-child(3) { animation-delay: 1.1s; }
+
+    .report-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #7f8c8d;
+      font-size: 0.95rem;
+    }
+
+    .stat-value {
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .salary-table {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out 1.3s forwards;
+      margin-top: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .chart-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out 1.5s forwards;
+      margin-top: 2rem;
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-size: 1.2rem;
+      font-weight: 500;
+      flex-direction: column;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">💰 Salary Report</a>
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Salary Management Report</h1>
+    <p class="page-subtitle">Comprehensive payroll analysis and salary distribution insights</p>
+
+    <div class="report-grid">
+      <div class="report-card">
+        <h2 class="report-title">
+          <span>💰</span>
+          Payroll Summary
+        </h2>
+        <div class="stat-item">
+          <span class="stat-label">Total Payroll</span>
+          <span class="stat-value">₹132,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Average Salary</span>
+          <span class="stat-value">₹44,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Allowances</span>
+          <span class="stat-value">₹19,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Deductions</span>
+          <span class="stat-value">₹17,000</span>
+        </div>
+      </div>
+
+      <div class="report-card">
+        <h2 class="report-title">
+          <span>📊</span>
+          Salary Analysis
+        </h2>
+        <div class="stat-item">
+          <span class="stat-label">Highest Salary</span>
+          <span class="stat-value">₹60,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Lowest Salary</span>
+          <span class="stat-value">₹40,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Salary Range</span>
+          <span class="stat-value">₹20,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Median Salary</span>
+          <span class="stat-value">₹42,000</span>
+        </div>
+      </div>
+
+      <div class="report-card">
+        <h2 class="report-title">
+          <span>📈</span>
+          Trends & Metrics
+        </h2>
+        <div class="stat-item">
+          <span class="stat-label">Monthly Growth</span>
+          <span class="stat-value">+5%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Cost per Employee</span>
+          <span class="stat-value">₹44,000</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Allowance Ratio</span>
+          <span class="stat-value">14.4%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Deduction Ratio</span>
+          <span class="stat-value">12.9%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="salary-table">
+      <h2 class="report-title">
+        <span>📋</span>
+        Detailed Payroll Records
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Basic Pay</th>
+            <th>Allowances</th>
+            <th>Deductions</th>
+            <th>Net Salary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12500123035</td>
+            <td>ANWESHA SHANNIGRAHI</td>
+            <td>CSE</td>
+            <td>₹60,000</td>
+            <td>₹5,000</td>
+            <td>₹5,000</td>
+            <td>₹50,000</td>
+          </tr>
+          <tr>
+            <td>12500123002</td>
+            <td>AARYAN SUMAN</td>
+            <td>CSE</td>
+            <td>₹60,000</td>
+            <td>₹10,000</td>
+            <td>₹10,000</td>
+            <td>₹40,000</td>
+          </tr>
+          <tr>
+            <td>12500123003</td>
+            <td>ABHISEK MURMU</td>
+            <td>CSE</td>
+            <td>₹50,000</td>
+            <td>₹4,000</td>
+            <td>₹2,000</td>
+            <td>₹42,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-container">
+      <h2 class="report-title">
+        <span>📊</span>
+        Salary Distribution Analysis
+      </h2>
+      <div class="chart-placeholder">
+        📊 Interactive Chart: Salary Distribution by Department
+        <br>
+        <small style="font-size: 0.9rem; margin-top: 1rem; display: block;">
+          CSE Department: ₹132,000 (100%) | 3 Employees | Range: ₹40,000 - ₹60,000
+        </small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

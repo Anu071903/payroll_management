@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Management - Payroll System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(rgba(10, 10, 20, 0.8), rgba(5, 5, 10, 0.9)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    }
+
+    .page-subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Tabs */
+    .tabs { margin-bottom: 1rem; }
+    .tab-list {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,0.8);
+      color: #2c3e50;
+      border: 2px solid #e1e8ed;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: #667eea; }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border-color: transparent;
+    }
+    .tab-panels .tab-panel { display: none; }
+    .tab-panels .tab-panel.active { display: block; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">👤 Payroll System</a>
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Employee Management</h1>
+    <p class="page-subtitle">Comprehensive employee records, profiles, and personal information management</p>
+
+    <div class="tabs">
+      <div class="tab-list">
+        <button class="tab-btn active" data-tab="tab-add">Add Employee</button>
+        <button class="tab-btn" data-tab="tab-stats">Statistics</button>
+        <button class="tab-btn" data-tab="tab-profile">Profile</button>
+        <button class="tab-btn" data-tab="tab-terminated">Terminated</button>
+      </div>
+      <div class="tab-panels">
+        <div class="tab-panel active" id="tab-add">
+          <div class="card" style="animation-delay: 0.7s;">
+        <h2 class="card-title">
+          <span>➕</span>
+          Add New Employee
+        </h2>
+        <form>
+          <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label for="employeeId">Employee ID:</label>
+            <input type="text" id="employeeId" placeholder="Enter employee ID">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter email address">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" placeholder="Enter phone number">
+          </div>
+
+              <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob">
+              </div>
+
+              <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender">
+                  <option value="">Select gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="idType">Verification Document Type:</label>
+                <select id="idType">
+                  <option value="">Select document type</option>
+                  <option value="aadhaar">Aadhaar Card</option>
+                  <option value="dl">Driving License</option>
+                  <option value="voter">Voter ID</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="idNumber">Document Number:</label>
+                <input type="text" id="idNumber" placeholder="Enter document number">
+          </div>
+
+          <div class="form-group">
+            <label for="department">Department:</label>
+            <select id="department">
+              <option>HR</option>
+              <option>Finance</option>
+              <option>IT</option>
+              <option>CSE</option>
+              <option>Sales</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" id="position" placeholder="Enter job position">
+          </div>
+
+          <div class="form-group">
+            <label for="hireDate">Hire Date:</label>
+            <input type="date" id="hireDate">
+          </div>
+
+              <button type="button" class="btn" id="addEmployeeBtn">Add Employee</button>
+        </form>
+      </div>
+        </div>
+        <div class="tab-panel" id="tab-stats">
+          <div class="card" style="animation-delay: 0.7s;">
+        <h2 class="card-title">
+          <span>📊</span>
+          Employee Statistics
+        </h2>
+            <div class="stats-grid">
+              </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-profile">
+          <div class="card" style="animation-delay: 0.7s;">
+            <h2 class="card-title">
+              <span>📇</span>
+              Employee Directory
+            </h2>
+            <div id="employeeList"></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-terminated">
+          <div class="card" style="animation-delay: 0.7s;">
+            <h2 class="card-title">
+              <span>🗂️</span>
+              Terminated Employees
+            </h2>
+            <div id="terminatedList"></div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Note: Employee Management is public in this setup; no admin guard here.
+      // Tabs
+      var tabButtons = document.querySelectorAll('.tab-btn');
+      var tabPanels = document.querySelectorAll('.tab-panel');
+      tabButtons.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var target = btn.getAttribute('data-tab');
+          tabButtons.forEach(function(b){ b.classList.remove('active'); });
+          tabPanels.forEach(function(p){ p.classList.remove('active'); });
+          btn.classList.add('active');
+          var panel = document.getElementById(target);
+          if (panel) panel.classList.add('active');
+
+          if (target === 'tab-profile') {
+            renderList();
+          } else if (target === 'tab-terminated') {
+            renderTerminatedList();
+          } else if (target === 'tab-stats') {
+            renderStats();
+          }
+        });
+      });
+
+      // Storage helpers
+      function getEmployees() {
+        try { return JSON.parse(localStorage.getItem('employees') || '[]'); } catch(e) { return []; }
+      }
+      function setEmployees(list) {
+        localStorage.setItem('employees', JSON.stringify(list));
+      }
+      function getTerminated() {
+        try { return JSON.parse(localStorage.getItem('terminatedEmployees') || '[]'); } catch(e) { return []; }
+      }
+      function setTerminated(list) {
+        localStorage.setItem('terminatedEmployees', JSON.stringify(list));
+      }
+
+      // Renderers
+      function renderStats() {
+        var list = getEmployees();
+        var terminated = getTerminated();
+        var total = list.length + terminated.length;
+        var active = list.filter(function(e){ return e.status === 'Active'; }).length;
+        var newHires = list.filter(function(e){
+          if (!e.hireDate) return false;
+          var d = new Date(e.hireDate);
+          var now = new Date();
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }).length;
+
+        var statsGrid = document.querySelector('#tab-stats .stats-grid');
+        if(statsGrid) {
+          statsGrid.innerHTML = `
+            <div class="stat-card">
+              <div class="stat-icon icon-purple">👥</div>
+              <div class="stat-content">
+                <div class="stat-value">${total}</div>
+                <div class="stat-label">Total Employees</div>
+        </div>
+      </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-green">✅</div>
+              <div class="stat-content">
+                <div class="stat-value">${active}</div>
+                <div class="stat-label">Active Employees</div>
+        </div>
+        </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-blue">🆕</div>
+              <div class="stat-content">
+                <div class="stat-value">${newHires}</div>
+                <div class="stat-label">New Hires This Month</div>
+        </div>
+        </div>
+          `;
+        }
+      }
+
+      function renderList() {
+        var list = getEmployees().filter(function(e){ return e.status !== 'Terminated'; });
+        var container = document.getElementById('employeeList');
+        if (!container) return;
+        if (!list.length) {
+          container.innerHTML = '<div style="color:#7f8c8d;">No employees yet.</div>';
+          return;
+        }
+        var html = list.map(function(e, idx){
+          var initials = (e.name || 'NA').split(/\s+/).map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();
+          return (
+            '<div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid #eee;">' +
+              '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">' + initials + '</div>' +
+              '<div style="flex:1;">' +
+                '<div style="font-weight:600;color:#2c3e50;">' + (e.name || '') + '</div>' +
+                '<div style="font-size:0.85rem;color:#7f8c8d;">' + (e.position || '') + ' • ' + (e.department || '') + '</div>' +
+              '</div>' +
+              '<div style="display:flex;gap:0.4rem;">' +
+                '<button data-view-index="' + idx + '" class="btn btn-inline">View</button>' +
+                '<button data-edit-index="' + idx + '" class="btn btn-inline btn-outline">Edit</button>' +
+                '<button data-term-index="' + idx + '" class="btn btn-inline btn-danger">Terminate</button>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+        container.innerHTML = html;
+
+        // Add event listeners for view, edit, and terminate buttons
+        // View handler (modal)
+        container.querySelectorAll('[data-view-index]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var i = parseInt(btn.getAttribute('data-view-index'), 10);
+            var e = getEmployees().filter(function(emp){ return emp.status !== 'Terminated'; })[i];
+            if (!e) return;
+            openQuickModal(
+              '<div style="display:grid;gap:0.5rem;">'
+              + row('Employee ID', e.employeeId||'')
+              + row('Name', e.name||'')
+              + row('Email', e.email||'')
+              + row('Phone', e.phone||'')
+              + row('Department', e.department||'')
+              + row('Position', e.position||'')
+              + row('Hire Date', e.hireDate ? new Date(e.hireDate).toLocaleDateString() : '')
+              + (e.dob ? row('Date of Birth', new Date(e.dob).toLocaleDateString()) : '')
+              + (e.gender ? row('Gender', e.gender) : '')
+              + (e.idType && e.idNumber ? row('Verification', (e.idType==='aadhaar'?'Aadhaar':e.idType==='dl'?'Driving License':'Voter ID')+': '+e.idNumber) : '')
+              + '</div>'
+            );
+          });
+        });
+
+        // Edit handler (prompts)
+        container.querySelectorAll('[data-edit-index]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var i = parseInt(btn.getAttribute('data-edit-index'), 10);
+            var list = getEmployees();
+            var e = list.filter(function(emp){ return emp.status !== 'Terminated'; })[i];
+            if (!e) return;
+            // Prefill modern popup
+            document.getElementById('editNameInput').value = e.name || '';
+            document.getElementById('editEmailInput').value = e.email || '';
+            document.getElementById('editPhoneInput').value = e.phone || '';
+            document.getElementById('editDeptInput').value = e.department || '';
+            document.getElementById('editPositionInput').value = e.position || '';
+            document.getElementById('editSalaryInput').value = e.salary || '';
+            document.getElementById('editPopup').dataset.empId = e.employeeId || '';
+            document.getElementById('editPopup').style.display = 'flex';
+          });
+        });
+
+        // Terminate handler (modern popup)
+        container.querySelectorAll('[data-term-index]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var i = parseInt(btn.getAttribute('data-term-index'), 10);
+            var list = getEmployees();
+            var e = list.filter(function(emp){ return emp.status !== 'Terminated'; })[i];
+            if (!e) return;
+            document.getElementById('terminateReasonInput').value = '';
+            document.getElementById('terminateNotesInput').value = '';
+            document.getElementById('terminatePopup').dataset.empId = e.employeeId || '';
+            document.getElementById('terminatePopup').style.display = 'flex';
+          });
+        });
+      }
+
+      function renderTerminatedList() {
+        var list = getTerminated();
+        var container = document.getElementById('terminatedList');
+        if (!container) return;
+        if (!list.length) {
+          container.innerHTML = '<div style="color:#7f8c8d;">No terminated employees.</div>';
+          return;
+        }
+        var html = list.map(function(e){
+          var initials = (e.name || 'NA').split(/\s+/).map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();
+          return (
+            '<div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid #eee;">' +
+              '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">' + initials + '</div>' +
+              '<div style="flex:1;">' +
+                '<div style="font-weight:600;color:#2c3e50;">' + (e.name || '') + '</div>' +
+                '<div style="font-size:0.85rem;color:#7f8c8d;">' + (e.position || '') + ' • ' + (e.department || '') + '</div>' +
+                '<div style="font-size:0.8rem;color:#ef4444;">Terminated' + (e.terminationReason ? ' - ' + e.terminationReason : '') + '</div>' +
+              '</div>' +
+              '<button data-delete-id="' + e.employeeId + '" class="btn btn-inline btn-danger">Delete</button>' +
+            '</div>'
+          );
+        }).join('');
+        container.innerHTML = html;
+
+        // Add event listener for the delete buttons
+        container.querySelectorAll('[data-delete-id]').forEach(function(button) {
+          button.addEventListener('click', function() {
+            var employeeId = this.getAttribute('data-delete-id');
+            deleteTerminatedEmployee(employeeId);
+          });
+        });
+      }
+
+      function deleteTerminatedEmployee(employeeId) {
+        if (confirm('Are you sure you want to permanently delete this terminated employee record?')) {
+          var terminatedEmployees = getTerminated();
+          var updatedList = terminatedEmployees.filter(function(emp) {
+            return emp.employeeId !== employeeId;
+          });
+          setTerminated(updatedList);
+          renderTerminatedList();
+        }
+      }
+
+      function loadFromStorage() {
+        // Initially render the active tab's content
+        var activeTab = document.querySelector('.tab-btn.active');
+        if (activeTab) {
+          var target = activeTab.getAttribute('data-tab');
+          if (target === 'tab-profile') {
+            renderList();
+          } else if (target === 'tab-terminated') {
+            renderTerminatedList();
+          } else if (target === 'tab-stats') {
+            renderStats();
+          }
+        }
+      }
+
+      // Add Employee
+      var addBtn = document.getElementById('addEmployeeBtn');
+      if (addBtn) {
+        addBtn.addEventListener('click', function() {
+          var name = document.getElementById('fullName').value.trim();
+          var empId = document.getElementById('employeeId').value.trim();
+          var email = document.getElementById('email').value.trim();
+          var phone = document.getElementById('phone').value.trim();
+          var dob = document.getElementById('dob').value;
+          var gender = document.getElementById('gender').value;
+          var idType = document.getElementById('idType').value;
+          var idNumber = document.getElementById('idNumber').value.trim();
+          var dept = document.getElementById('department').value;
+          var position = document.getElementById('position').value.trim();
+          var hireDate = document.getElementById('hireDate').value;
+
+          if (!name || !empId || !email || !phone || !dept || !position || !hireDate) {
+            alert('Please fill in all required fields.');
+            return;
+          }
+
+          var employee = {
+            name: name,
+            employeeId: empId,
+            email: email,
+            phone: phone,
+            dob: dob || null,
+            gender: gender || null,
+            idType: idType || null,
+            idNumber: idNumber || null,
+            department: dept,
+            position: position,
+            hireDate: hireDate,
+            salary: '',
+            status: 'Active'
+          };
+
+          var list = getEmployees();
+          list.push(employee);
+          setEmployees(list);
+
+          alert('Employee added successfully!');
+          document.querySelector('#tab-add form').reset();
+          var profileTabBtn = document.querySelector('[data-tab="tab-profile"]');
+          if (profileTabBtn) profileTabBtn.click();
+        });
+      }
+
+      // Helpers for quick modal
+      function row(label, value) {
+        return '<div style="display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed #eee;padding:0.35rem 0;">'
+          + '<div style="color:#7f8c8d;">' + label + '</div>'
+          + '<div style="font-weight:600;color:#2c3e50;">' + value + '</div>'
+          + '</div>';
+      }
+      function openQuickModal(html) {
+        var overlay = document.getElementById('quickModal');
+        var body = document.getElementById('quickModalBody');
+        if (overlay && body) {
+          body.innerHTML = html;
+          overlay.style.display = 'flex';
+        }
+      }
+      function closeQuickModal() {
+        var overlay = document.getElementById('quickModal');
+        if (overlay) overlay.style.display = 'none';
+      }
+
+      // Save from edit popup
+      var editSaveBtn = document.getElementById('editPopupSave');
+      if (editSaveBtn) {
+        editSaveBtn.addEventListener('click', function(){
+          var overlay = document.getElementById('editPopup');
+          var empId = overlay?.dataset?.empId || '';
+          var list = getEmployees();
+          var idx = list.findIndex(function(emp){ return (emp.employeeId||'') === empId; });
+          if (idx !== -1) {
+            list[idx].name = document.getElementById('editNameInput').value.trim();
+            list[idx].email = document.getElementById('editEmailInput').value.trim();
+            list[idx].phone = document.getElementById('editPhoneInput').value.trim();
+            list[idx].department = document.getElementById('editDeptInput').value.trim();
+            list[idx].position = document.getElementById('editPositionInput').value.trim();
+            list[idx].salary = document.getElementById('editSalaryInput').value.trim();
+            setEmployees(list);
+            renderStats();
+            renderList();
+          }
+          overlay.style.display = 'none';
+        });
+      }
+
+      // Confirm termination popup
+      var termConfirmBtn = document.getElementById('terminatePopupConfirm');
+      if (termConfirmBtn) {
+        termConfirmBtn.addEventListener('click', function(){
+          var overlay = document.getElementById('terminatePopup');
+          var empId = overlay?.dataset?.empId || '';
+          var reason = document.getElementById('terminateReasonInput').value;
+          var notes = document.getElementById('terminateNotesInput').value.trim();
+          if (!reason) { alert('Please select a reason.'); return; }
+          var list = getEmployees();
+          var idx = list.findIndex(function(emp){ return (emp.employeeId||'') === empId; });
+          if (idx !== -1) {
+            var emp = list.splice(idx, 1)[0];
+            emp.status = 'Terminated';
+            emp.terminationReason = reason;
+            emp.terminationNotes = notes;
+            emp.terminationDate = new Date().toISOString();
+            var term = getTerminated();
+            term.push(emp);
+            setEmployees(list);
+            setTerminated(term);
+            renderStats();
+            renderList();
+            renderTerminatedList();
+          }
+          overlay.style.display = 'none';
+        });
+      }
+
+      // Initial load
+      loadFromStorage();
+    });
+  </script>
+  <!-- Minimal Quick Modal -->
+  <div id="quickModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000;">
+    <div style="width:100%;max-width:520px;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.25);overflow:hidden;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid #eaecef;display:flex;align-items:center;justify-content:space-between;font-weight:600;color:#2c3e50;">
+        Employee Details
+        </div>
+      <div id="quickModalBody" style="padding:1rem 1.25rem;"></div>
+      <div style="padding:1rem 1.25rem;border-top:1px solid #eaecef;display:flex;justify-content:flex-end;">
+        <button type="button" class="btn btn-inline" onclick="(function(){document.getElementById('quickModal').style.display='none'})()">Close</button>
+      </div>
+        </div>
+      </div>
+  <!-- Edit Popup (modern) -->
+  <div id="editPopup" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000;">
+    <div style="width:100%;max-width:560px;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,0.3);overflow:hidden;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid #eaecef;display:flex;align-items:center;justify-content:space-between;font-weight:600;color:#2c3e50;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;">
+        Edit Employee
+      </div>
+      <div style="padding:1rem 1.25rem;display:grid;gap:0.75rem;">
+        <div>
+          <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Full Name</label>
+          <input id="editNameInput" type="text" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div>
+            <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Email</label>
+            <input id="editEmailInput" type="email" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+          </div>
+          <div>
+            <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Phone</label>
+            <input id="editPhoneInput" type="tel" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+        </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div>
+            <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Department</label>
+            <input id="editDeptInput" type="text" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+        </div>
+          <div>
+            <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Position</label>
+            <input id="editPositionInput" type="text" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+        </div>
+        </div>
+        <div>
+          <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Salary (optional)</label>
+          <input id="editSalaryInput" type="text" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;" />
+        </div>
+        </div>
+      <div style="padding:1rem 1.25rem;border-top:1px solid #eaecef;display:flex;gap:0.5rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-inline btn-ghost" onclick="(function(){document.getElementById('editPopup').style.display='none'})()">Cancel</button>
+        <button type="button" class="btn btn-inline" id="editPopupSave">Save</button>
+        </div>
+    </div>
+  </div>
+  <!-- Termination Popup (modern) -->
+  <div id="terminatePopup" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000;">
+    <div style="width:100%;max-width:520px;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,0.3);overflow:hidden;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid #eaecef;display:flex;align-items:center;justify-content:space-between;font-weight:600;color:#fff;background:linear-gradient(135deg,#ef4444,#dc2626);">
+        Terminate Employee
+      </div>
+      <div style="padding:1rem 1.25rem;display:grid;gap:0.75rem;">
+        <div>
+          <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Reason</label>
+          <select id="terminateReasonInput" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;">
+            <option value="">Select a reason</option>
+            <option>Resignation</option>
+            <option>Layoff</option>
+            <option>Performance</option>
+            <option>Policy Violation</option>
+            <option>End of Contract</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-weight:600;color:#34495e;margin-bottom:0.35rem;">Notes (optional)</label>
+          <textarea id="terminateNotesInput" rows="3" style="width:100%;padding:0.75rem;border:2px solid #e1e8ed;border-radius:8px;font-size:1rem;"></textarea>
+        </div>
+      </div>
+      <div style="padding:1rem 1.25rem;border-top:1px solid #eaecef;display:flex;gap:0.5rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-inline btn-ghost" onclick="(function(){document.getElementById('terminatePopup').style.display='none'})()">Cancel</button>
+        <button type="button" class="btn btn-inline btn-danger" id="terminatePopupConfirm">Confirm Termination</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

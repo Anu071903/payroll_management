@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Directory - Payroll System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(rgba(29, 38, 113, 0.7), rgba(19, 7, 92, 0.7)), url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      letter-spacing: -1px;
+    }
+
+    .action-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .action-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .table-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    .form-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .form-modal {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .form-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-btn.primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .form-btn.secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Student Directory</h1>
+      <div>
+        <a href="index.html" class="action-btn" style="margin-right: 1rem;">← Back to Home</a>
+        <button class="action-btn" onclick="openForm()">➕ Add Student</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>University Roll Number</th>
+            <th>Student Name</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <!-- Student rows will be inserted here by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Form Overlay -->
+  <div class="form-overlay" id="formOverlay">
+    <div class="form-modal">
+      <button class="close-btn" onclick="closeForm()">&times;</button>
+      <h2 id="formTitle">Add New Student</h2>
+      <form id="dataForm">
+        <div id="formFields">
+          <div class="form-group">
+            <label for="studentRoll">University Roll Number:</label>
+            <input type="text" id="studentRoll" required>
+          </div>
+          <div class="form-group">
+            <label for="studentName">Student Name:</label>
+            <input type="text" id="studentName" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="form-btn primary" onclick="saveData()">Save Student</button>
+          <button type="button" class="form-btn secondary" onclick="closeForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let systemData = {};
+
+    // Load data from localStorage
+    function loadData() {
+      const savedData = localStorage.getItem('payrollSystemData');
+      if (savedData) {
+        systemData = JSON.parse(savedData);
+        // Ensure students array exists
+        if (!systemData.students) {
+          systemData.students = [];
+        }
+      } else {
+        // If no data, initialize with empty students array
+        systemData = { students: [] };
+      }
+      renderStudentTable();
+    }
+
+    // Save data to localStorage
+    function saveDataToStorage() {
+      localStorage.setItem('payrollSystemData', JSON.stringify(systemData));
+    }
+
+    // Render the student table
+    function renderStudentTable() {
+      const tableBody = document.getElementById('studentTableBody');
+      tableBody.innerHTML = ''; // Clear existing rows
+      if (systemData.students.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center; color: #7f8c8d;">No students found. Add one to get started!</td></tr>';
+      } else {
+        systemData.students.forEach(student => {
+          const row = `<tr>
+                        <td>${student.roll}</td>
+                        <td>${student.name}</td>
+                      </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+    }
+
+    // Form management
+    function openForm() {
+      document.getElementById('formOverlay').style.display = 'flex';
+    }
+
+    function closeForm() {
+      document.getElementById('formOverlay').style.display = 'none';
+      document.getElementById('dataForm').reset();
+    }
+
+    function saveData() {
+      const roll = document.getElementById('studentRoll').value;
+      const name = document.getElementById('studentName').value;
+
+      if (roll && name) {
+        const newStudent = { roll, name };
+        systemData.students.push(newStudent);
+        saveDataToStorage();
+        renderStudentTable();
+        closeForm();
+        alert('Student added successfully!');
+      } else {
+        alert('Please fill all fields.');
+      }
+    }
+
+    // Initial load
+    loadData();
+  </script>
+</body>
+</html>

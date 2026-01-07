@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Management - Payroll System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(rgba(10, 10, 20, 0.8), rgba(5, 5, 10, 0.9)), url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=2072&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    }
+
+    .page-subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.7s; }
+    .card:nth-child(2) { animation-delay: 0.9s; }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .leave-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .leave-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .leave-card:nth-child(1) { animation-delay: 1.1s; }
+    .leave-card:nth-child(2) { animation-delay: 1.3s; }
+    .leave-card:nth-child(3) { animation-delay: 1.5s; }
+
+    .leave-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .leave-type {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .leave-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-approved {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-rejected {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .leave-details {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .leave-dates {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #667eea;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">📅 Payroll System</a>
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Leave Management</h1>
+    <p class="page-subtitle">Track and manage employee leave requests, approvals, and balances</p>
+
+    <div class="content-grid">
+      <div class="card">
+        <h2 class="card-title">
+          <span>📝</span>
+          Request Leave
+        </h2>
+        <form>
+          <div class="form-group">
+            <label for="employeeName">Employee Name:</label>
+            <input type="text" id="employeeName" placeholder="Enter employee name">
+          </div>
+
+          <div class="form-group">
+            <label for="leaveType">Leave Type:</label>
+            <select id="leaveType">
+              <option>Sick Leave</option>
+              <option>Annual Leave</option>
+              <option>Personal Leave</option>
+              <option>Maternity Leave</option>
+              <option>Emergency Leave</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+          </div>
+
+          <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+          </div>
+
+          <div class="form-group">
+            <label for="reason">Reason:</label>
+            <textarea id="reason" rows="3" placeholder="Enter reason for leave"></textarea>
+          </div>
+
+          <button type="button" class="btn">Submit Request</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">
+          <span>📊</span>
+          Leave Statistics
+        </h2>
+        <div style="text-align: center; padding: 2rem;">
+          <div style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;">📅</div>
+          <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Pending Requests: 2</h3>
+          <p style="color: #7f8c8d;">Approved This Month: 5</p>
+          <p style="color: #7f8c8d;">Total Leave Days Used: 12</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="leave-grid">
+      <div class="leave-card">
+        <div class="leave-header">
+          <div class="leave-type">Annual Leave</div>
+          <div class="leave-status status-pending">Pending</div>
+        </div>
+        <div class="leave-details">Employee: ANWESHA SHANNIGRAHI</div>
+        <div class="leave-details">Department: CSE</div>
+        <div class="leave-dates">
+          <span>From: 2024-01-15</span>
+          <span>To: 2024-01-20</span>
+        </div>
+      </div>
+
+      <div class="leave-card">
+        <div class="leave-header">
+          <div class="leave-type">Sick Leave</div>
+          <div class="leave-status status-approved">Approved</div>
+        </div>
+        <div class="leave-details">Employee: John Doe</div>
+        <div class="leave-details">Department: IT</div>
+        <div class="leave-dates">
+          <span>From: 2024-01-10</span>
+          <span>To: 2024-01-12</span>
+        </div>
+      </div>
+
+      <div class="leave-card">
+        <div class="leave-header">
+          <div class="leave-type">Personal Leave</div>
+          <div class="leave-status status-pending">Pending</div>
+        </div>
+        <div class="leave-details">Employee: Jane Smith</div>
+        <div class="leave-details">Department: HR</div>
+        <div class="leave-dates">
+          <span>From: 2024-01-18</span>
+          <span>To: 2024-01-19</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

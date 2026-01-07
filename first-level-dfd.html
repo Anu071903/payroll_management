@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First-Level DFD - Payroll Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 4rem;
+      padding-top: 2rem;
+    }
+
+    .title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.8s forwards;
+      font-weight: 300;
+    }
+
+    .dfd-level {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 1.1s forwards;
+    }
+
+    .dfd-level-text {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .processes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .process-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .process-card:nth-child(1) { animation-delay: 1.4s; }
+    .process-card:nth-child(2) { animation-delay: 1.6s; }
+    .process-card:nth-child(3) { animation-delay: 1.8s; }
+    .process-card:nth-child(4) { animation-delay: 2.0s; }
+    .process-card:nth-child(5) { animation-delay: 2.2s; }
+    .process-card:nth-child(6) { animation-delay: 2.4s; }
+
+    .process-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .process-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #667eea;
+    }
+
+    .process-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .process-description {
+      color: #7f8c8d;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .outputs-section {
+      border-top: 2px solid #e1e8ed;
+      padding-top: 1rem;
+    }
+
+    .outputs-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #34495e;
+      margin-bottom: 0.75rem;
+    }
+
+    .output-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .output-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .output-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Ripple Effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.3);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Floating particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 500;
+      z-index: 1000;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 2.5rem;
+      }
+      
+      .processes-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .process-card {
+        padding: 1.5rem;
+      }
+
+      .back-btn {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 2rem;
+        display: block;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <a href="index.html" class="back-btn">← Back to Zero-Level DFD</a>
+  
+  <div class="container">
+    <div class="header">
+      <h1 class="title">First-Level DFD</h1>
+      <p class="subtitle">Detailed process breakdown showing inputs, processes, and outputs</p>
+      
+      <div class="dfd-level">
+        <div class="dfd-level-text">📊 Data Flow Diagram - Level 1</div>
+      </div>
+      
+      <div style="margin-top: 2rem;">
+        <a href="second-level-dfd.html" style="background: rgba(255,255,255,0.2); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; display: inline-block;">🔐 View Second-Level DFD (Admin) →</a>
+      </div>
+    </div>
+
+    <div class="processes-grid">
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">🏢</div>
+        <h3 class="process-title">Department Management</h3>
+        <p class="process-description">Manages organizational structure, department hierarchies, and departmental data</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="department-report.html" class="output-btn">📊 Department Report</a>
+            <a href="department-report.html" class="output-btn">📈 Department Statistics</a>
+            <a href="department-report.html" class="output-btn">📋 Department Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">💰</div>
+        <h3 class="process-title">Salary Management</h3>
+        <p class="process-description">Handles payroll calculations, salary processing, and compensation management</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="salary-report.html" class="output-btn">💰 Payroll Report</a>
+            <a href="salary-report.html" class="output-btn">📊 Salary Analysis</a>
+            <a href="salary-report.html" class="output-btn">📋 Salary Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">👥</div>
+        <h3 class="process-title">System User Management</h3>
+        <p class="process-description">Manages user accounts, roles, permissions, and system access controls</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="user-report.html" class="output-btn">👥 User Report</a>
+            <a href="user-report.html" class="output-btn">🔐 Permission Log</a>
+            <a href="user-report.html" class="output-btn">📋 User Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">🔐</div>
+        <h3 class="process-title">Login Management</h3>
+        <p class="process-description">Handles authentication, session management, and security monitoring</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="login-report.html" class="output-btn">🔐 Login Report</a>
+            <a href="login-report.html" class="output-btn">📊 Security Log</a>
+            <a href="login-report.html" class="output-btn">📋 Session Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">📅</div>
+        <h3 class="process-title">Leave Management</h3>
+        <p class="process-description">Tracks leave requests, approvals, balances, and attendance management</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="leave-report.html" class="output-btn">📅 Leave Report</a>
+            <a href="leave-report.html" class="output-btn">📊 Attendance Log</a>
+            <a href="leave-report.html" class="output-btn">📋 Leave Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-card" onclick="createRipple(event)">
+        <div class="process-icon">👤</div>
+        <h3 class="process-title">Employee Management</h3>
+        <p class="process-description">Manages employee records, profiles, and personal information</p>
+        <div class="outputs-section">
+          <div class="outputs-title">📋 Outputs:</div>
+          <div class="output-buttons">
+            <a href="employee-report.html" class="output-btn">👤 Employee Report</a>
+            <a href="employee-report.html" class="output-btn">📊 Employee Statistics</a>
+            <a href="employee-report.html" class="output-btn">📋 Employee Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = Math.random() * 4 + 2 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Ripple effect
+    function createRipple(event) {
+      const card = event.currentTarget;
+      const ripple = document.createElement('span');
+      const rect = card.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = event.clientX - rect.left - size / 2;
+      const y = event.clientY - rect.top - size / 2;
+
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.classList.add('ripple');
+
+      card.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    }
+
+    // Initialize particles
+    createParticles();
+  </script>
+</body>
+</html>
